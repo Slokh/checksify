@@ -87,7 +87,14 @@ export default function Home() {
       </Heading>
       <Text>Convert a PNG/JPG image into a PNG/SVG in the Checks format.</Text>
       <Text>
-        Inspiration:{" "}
+        <Link
+          color="#aaa"
+          href="https://github.com/Slokh/checksify"
+          _hover={{ color: "white" }}
+        >
+          Source Code
+        </Link>{" "}
+        | Inspiration:{" "}
         <Link
           color="#aaa"
           href="https://opensea.io/collection/vv-checks"
