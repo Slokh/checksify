@@ -13,7 +13,8 @@ export const getChunkedColors = (imageData) => {
     rgbaArray[row].push([red, green, blue, alpha]);
   }
 
-  const chunkSize = Math.floor(imageData.width / 8);
+  const widthChunk = Math.floor(imageData.width / 8);
+  const heightChunk = Math.floor(imageData.height / 10);
   const averagedArray = [];
 
   for (let i = 0; i < 8; i++) {
@@ -24,16 +25,12 @@ export const getChunkedColors = (imageData) => {
       let chunkBlue = 0;
       let chunkAlpha = 0;
       let chunkCount = 0;
-      for (let k = 0; k < chunkSize; k++) {
-        for (let l = 0; l < imageData.height / 10; l++) {
-          chunkRed +=
-            rgbaArray[j * (imageData.height / 10) + l][i * chunkSize + k][0];
-          chunkGreen +=
-            rgbaArray[j * (imageData.height / 10) + l][i * chunkSize + k][1];
-          chunkBlue +=
-            rgbaArray[j * (imageData.height / 10) + l][i * chunkSize + k][2];
-          chunkAlpha +=
-            rgbaArray[j * (imageData.height / 10) + l][i * chunkSize + k][3];
+      for (let k = 0; k < widthChunk; k++) {
+        for (let l = 0; l < heightChunk; l++) {
+          chunkRed += rgbaArray[j * heightChunk + l][i * widthChunk + k][0];
+          chunkGreen += rgbaArray[j * heightChunk + l][i * widthChunk + k][1];
+          chunkBlue += rgbaArray[j * heightChunk + l][i * widthChunk + k][2];
+          chunkAlpha += rgbaArray[j * heightChunk + l][i * widthChunk + k][3];
           chunkCount++;
         }
       }
