@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   const [colors, setColors] = useState(randomColors());
   const linkRef = useRef(null);
+  const canvasRef = useRef(null);
 
   const handleChange = async (e) => {
     const image = await createImageBitmap(e.target.files[0]);
@@ -22,16 +23,36 @@ export default function Home() {
     );
   };
 
-  const handleDownload = () => {
+  const getSVGString = () => {
     const svgElement = document.querySelector("#result");
-    const svgBlob = new Blob(
-      [new XMLSerializer().serializeToString(svgElement)],
-      { type: "image/svg+xml;charset=utf-8" }
-    );
+    return new XMLSerializer().serializeToString(svgElement);
+  };
+
+  const handleSVGDownload = () => {
+    const svgBlob = new Blob([getSVGString()], {
+      type: "image/svg+xml;charset=utf-8",
+    });
     const svgUrl = URL.createObjectURL(svgBlob);
     linkRef.current.href = svgUrl;
     linkRef.current.download = "result.svg";
     linkRef.current.click();
+  };
+
+  const handlePNGDownload = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    const img = new Image();
+    img.src = `data:image/svg+xml;utf8,${encodeURIComponent(getSVGString())}`;
+
+    img.onload = function () {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      linkRef.current.href = canvas.toDataURL("image/png");
+      linkRef.current.download = "result.png";
+      linkRef.current.click();
+    };
   };
 
   return (
@@ -49,9 +70,13 @@ export default function Home() {
       </Heading>
       <Input type="file" fontSize="2xl" onChange={handleChange} />
       <SVG rotatedArray={colors} />
-      <Link cursor="pointer" ref={linkRef} onClick={handleDownload}>
-        Download
+      <Link cursor="pointer" ref={linkRef} onClick={handleSVGDownload}>
+        Download SVG
       </Link>
+      <Link cursor="pointer" ref={linkRef} onClick={handlePNGDownload}>
+        Download PNG
+      </Link>
+      <canvas ref={canvasRef} style={{ display: "none" }} />
     </Stack>
   );
 }
