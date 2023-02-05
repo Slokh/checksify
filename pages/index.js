@@ -85,8 +85,24 @@ export default function Home() {
       <Heading as="h1" size="4xl">
         Checksify
       </Heading>
+      <Text>Convert a PNG/JPG image into a PNG/SVG in the Checks format.</Text>
       <Text>
-        Upload a PNG/JPG image and get a SVG/PNG in the Checks format.
+        Inspiration:{" "}
+        <Link
+          color="#aaa"
+          href="https://opensea.io/collection/vv-checks"
+          _hover={{ color: "white" }}
+        >
+          Checks
+        </Link>{" "}
+        by{" "}
+        <Link
+          color="#aaa"
+          href="https://twitter.com/jackbutcher"
+          _hover={{ color: "white" }}
+        >
+          @jackbutcher
+        </Link>
       </Text>
       <Input type="file" fontSize="2xl" onChange={handleChange} />
       <SVG rotatedArray={colors} setSVGString={setSVGString} />
