@@ -1,5 +1,5 @@
-import { Heading, Input, Link, Stack, Text } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { Button, Heading, Input, Link, Stack, Text } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import { Inter } from "@next/font/google";
 import { getChunkedColors, randomColors } from "@/utils/colors";
 import { dValues } from "@/utils/svg";
@@ -8,8 +8,12 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [colors, setColors] = useState(randomColors());
-  const linkRef = useRef(null);
+  const [svgString, setSVGString] = useState("");
+  const svgLinkRef = useRef(null);
+  const pngLinkRef = useRef(null);
   const canvasRef = useRef(null);
+  const [svgUrl, setSvgUrl] = useState(null);
+  const [pngUrl, setPngUrl] = useState(null);
 
   const handleChange = async (e) => {
     const image = await createImageBitmap(e.target.files[0]);
@@ -23,36 +27,41 @@ export default function Home() {
     );
   };
 
-  const getSVGString = () => {
-    const svgElement = document.querySelector("#result");
-    return new XMLSerializer().serializeToString(svgElement);
-  };
+  useEffect(() => {
+    if (svgString) {
+      setSvgUrl(
+        URL.createObjectURL(
+          new Blob([svgString], {
+            type: "image/svg+xml;charset=utf-8",
+          })
+        )
+      );
+
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+
+      const img = new Image();
+      img.src = `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
+
+      img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        setPngUrl(canvas.toDataURL("image/png"));
+      };
+    }
+  }, [svgString]);
 
   const handleSVGDownload = () => {
-    const svgBlob = new Blob([getSVGString()], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-    const svgUrl = URL.createObjectURL(svgBlob);
-    linkRef.current.href = svgUrl;
-    linkRef.current.download = "result.svg";
-    linkRef.current.click();
+    svgLinkRef.current.href = svgUrl;
+    svgLinkRef.current.download = "result.svg";
+    svgLinkRef.current.click();
   };
 
   const handlePNGDownload = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    const img = new Image();
-    img.src = `data:image/svg+xml;utf8,${encodeURIComponent(getSVGString())}`;
-
-    img.onload = function () {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-      linkRef.current.href = canvas.toDataURL("image/png");
-      linkRef.current.download = "result.png";
-      linkRef.current.click();
-    };
+    pngLinkRef.current.href = pngUrl;
+    pngLinkRef.current.download = "result.png";
+    pngLinkRef.current.click();
   };
 
   return (
@@ -72,12 +81,12 @@ export default function Home() {
         Upload a PNG/JPG image and get a SVG/PNG in the Checks format.
       </Text>
       <Input type="file" fontSize="2xl" onChange={handleChange} />
-      <SVG rotatedArray={colors} />
+      <SVG rotatedArray={colors} setSVGString={setSVGString} />
       <Stack direction="row" align="center" justify="center" spacing={32}>
-        <Link cursor="pointer" ref={linkRef} onClick={handleSVGDownload}>
+        <Link cursor="pointer" ref={svgLinkRef} onClick={handleSVGDownload}>
           Download SVG
         </Link>
-        <Link cursor="pointer" ref={linkRef} onClick={handlePNGDownload}>
+        <Link cursor="pointer" ref={pngLinkRef} onClick={handlePNGDownload}>
           Download PNG
         </Link>
       </Stack>
@@ -86,7 +95,11 @@ export default function Home() {
   );
 }
 
-const SVG = ({ rotatedArray }) => {
+const SVG = ({ rotatedArray, setSVGString }) => {
+  useEffect(() => {
+    const svgElement = document.querySelector("#result");
+    setSVGString(new XMLSerializer().serializeToString(svgElement));
+  }, [setSVGString]);
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
