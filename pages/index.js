@@ -1,4 +1,4 @@
-import { Heading, Input, Link, Stack } from "@chakra-ui/react";
+import { Heading, Input, Link, Stack, Text } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { Inter } from "@next/font/google";
 import { getChunkedColors, randomColors } from "@/utils/colors";
@@ -66,16 +66,21 @@ export default function Home() {
       spacing={16}
     >
       <Heading as="h1" size="4xl">
-        Checks-ify an Image
+        Checksify
       </Heading>
+      <Text>
+        Upload a PNG/JPG image and get a SVG/PNG in the Checks format.
+      </Text>
       <Input type="file" fontSize="2xl" onChange={handleChange} />
       <SVG rotatedArray={colors} />
-      <Link cursor="pointer" ref={linkRef} onClick={handleSVGDownload}>
-        Download SVG
-      </Link>
-      <Link cursor="pointer" ref={linkRef} onClick={handlePNGDownload}>
-        Download PNG
-      </Link>
+      <Stack direction="row" align="center" justify="center" spacing={32}>
+        <Link cursor="pointer" ref={linkRef} onClick={handleSVGDownload}>
+          Download SVG
+        </Link>
+        <Link cursor="pointer" ref={linkRef} onClick={handlePNGDownload}>
+          Download PNG
+        </Link>
+      </Stack>
       <canvas ref={canvasRef} style={{ display: "none" }} />
     </Stack>
   );
