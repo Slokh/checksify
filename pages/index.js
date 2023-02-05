@@ -37,6 +37,14 @@ export default function Home() {
         )
       );
 
+      console.log(
+        URL.createObjectURL(
+          new Blob([svgString], {
+            type: "image/svg+xml;charset=utf-8",
+          })
+        )
+      );
+
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
 
@@ -99,7 +107,8 @@ const SVG = ({ rotatedArray, setSVGString }) => {
   useEffect(() => {
     const svgElement = document.querySelector("#result");
     setSVGString(new XMLSerializer().serializeToString(svgElement));
-  }, [setSVGString]);
+  }, [setSVGString, rotatedArray]);
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
