@@ -55,3 +55,19 @@ export const getChunkedColors = (imageData) => {
 
   return rotatedArray;
 };
+
+export const randomColors = () => {
+  const array = [];
+  for (let i = 0; i < 10; i++) {
+    const row = [];
+    for (let j = 0; j < 8; j++) {
+      const r = Math.floor(Math.random() * 256);
+      const g = Math.floor(Math.random() * 256);
+      const b = Math.floor(Math.random() * 256);
+      row.push([r, g, b, 255]);
+    }
+    array.push(row);
+  }
+
+  return array;
+};

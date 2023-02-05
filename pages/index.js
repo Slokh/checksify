@@ -1,13 +1,13 @@
 import { Heading, Input, Link, Stack } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { Inter } from "@next/font/google";
-import { getChunkedColors } from "@/utils/colors";
+import { getChunkedColors, randomColors } from "@/utils/colors";
 import { dValues } from "@/utils/svg";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [colors, setColors] = useState(null);
+  const [colors, setColors] = useState(randomColors());
   const linkRef = useRef(null);
 
   const handleChange = async (e) => {
