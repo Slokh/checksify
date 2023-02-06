@@ -46,7 +46,7 @@ export const getChunkedColors = (imageData) => {
   for (let i = 0; i < 10; i++) {
     rotatedArray[i] = [];
     for (let j = 0; j < 8; j++) {
-      rotatedArray[i][j] = averagedArray[8 - j - 1][i];
+      rotatedArray[i][j] = averagedArray[j][i];
     }
   }
 
